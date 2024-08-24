@@ -9,7 +9,7 @@ function Navbar() {
       padding: '10px',
       backgroundColor: '#f3f3f3'
     }}>
-      <Link to="/" style={{
+      <Link to="/home" style={{
         margin: '0 15px',
         textDecoration: 'none',
         color: 'black',
