@@ -5,11 +5,15 @@ import About from './components/About';
 import Services from './components/Services';
 import Contact from './components/Contact';
 import Navbar from './components/Navbar';
+import RegistrationForm from './components/RegistrationForm';
+import FormikForm from './components/formikForm';
 
 function App() {
   return (
     <Router>
       <div>
+        <RegistrationForm />
+        <FormikForm />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
