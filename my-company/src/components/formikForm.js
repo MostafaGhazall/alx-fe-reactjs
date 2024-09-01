@@ -2,83 +2,42 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
+const validationSchema = Yup.object({
+  username: Yup.string().required('Username is required'),
+  email: Yup.string().email('Invalid email address').required('Email is required'),
+  password: Yup.string().required('Password is required'),
+});
+
 const FormikForm = () => {
-  const initialValues = {
-    username: '',
-    email: '',
-    password: '',
-  };
-
-  const validationSchema = Yup.object({
-    username: Yup.string()
-      .required('Username is required')
-      .min(3, 'Username must be at least 3 characters'),
-    email: Yup.string()
-      .email('Invalid email format')
-      .required('Email is required'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(6, 'Password must be at least 6 characters'),
-  });
-
-  const onSubmit = async (values, { setSubmitting, resetForm }) => {
-    try {
-      // Simulate API call
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('User registered successfully:', data);
-        resetForm();
-        alert('Registration successful!');
-      } else {
-        alert('Failed to register. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
+  const handleSubmit = (values) => {
+    // Mock API call
+    console.log('Form submitted', values);
   };
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{ username: '', email: '', password: '' }}
       validationSchema={validationSchema}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
     >
-      {({ isSubmitting }) => (
-        <Form>
-          <div>
-            <label htmlFor="username">Username:</label>
-            <Field type="text" id="username" name="username" />
-            <ErrorMessage name="username" component="span" style={{ color: 'red' }} />
-          </div>
-
-          <div>
-            <label htmlFor="email">Email:</label>
-            <Field type="email" id="email" name="email" />
-            <ErrorMessage name="email" component="span" style={{ color: 'red' }} />
-          </div>
-
-          <div>
-            <label htmlFor="password">Password:</label>
-            <Field type="password" id="password" name="password" />
-            <ErrorMessage name="password" component="span" style={{ color: 'red' }} />
-          </div>
-
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Registering...' : 'Register'}
-          </button>
-        </Form>
-      )}
+      <Form>
+        <div>
+          <label>Username:</label>
+          <Field name="username" type="text" />
+          <ErrorMessage name="username" component="div" />
+        </div>
+        <div>
+          <label>Email:</label>
+          <Field name="email" type="email" />
+          <ErrorMessage name="email" component="div" />
+        </div>
+        <div>
+          <label>Password:</label>
+          <Field name="password" type="password" />
+          <ErrorMessage name="password" component="div" />
+        </div>
+        <button type="submit">Register</button>
+      </Form>
     </Formik>
   );
 };
