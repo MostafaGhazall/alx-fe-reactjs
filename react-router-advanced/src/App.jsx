@@ -26,7 +26,7 @@ function App() {
             <Route path="details" element={<ProfileDetails />} />
             <Route path="settings" element={<ProfileSettings />} />
           </Route>
-          <Route path="/posts/:id" element={<BlogPost />} />
+          <Route path="/blog/:id" element={<BlogPost />} /> {/* Dynamic route for blog posts */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
