@@ -22,11 +22,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<ProtectedRoute element={<Profile />} isAuthenticated={isAuthenticated} />}>
+          <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} >
             <Route path="details" element={<ProfileDetails />} />
             <Route path="settings" element={<ProfileSettings />} />
           </Route>
-          <Route path="/blog/:id" element={<BlogPost />} /> {/* Dynamic route for blog posts */}
+          <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
