@@ -13,14 +13,25 @@ const HomePage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Recipe Sharing Platform</h1>
+      {/* Page Header with Add Recipe Link */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Recipe Sharing Platform</h1>
+        {/* Link to Add Recipe Form */}
+        <Link
+          to="/add-recipe"
+          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
+        >
+          Add New Recipe
+        </Link>
+      </div>
+
+      {/* Recipe List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {recipes.map((recipe) => (
           <div
             key={recipe.id}
             className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
           >
-            {/* Wrap the image and title with the Link component */}
             <Link to={`/recipe/${recipe.id}`}>
               <img
                 src={recipe.image}
