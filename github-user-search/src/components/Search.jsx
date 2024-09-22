@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { fetchUserData } from '../services/githubService';
+import { fetchAdvancedUserData } from '../services/githubService';
 
 const Search = () => {
   const [username, setUsername] = useState('');
-  const [userData, setUserData] = useState(null);
+  const [location, setLocation] = useState('');
+  const [minRepos, setMinRepos] = useState('');
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -11,42 +13,65 @@ const Search = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setUserData(null);
+    setUsers([]);
 
     try {
-      const data = await fetchUserData(username);
-      setUserData(data);
+      const data = await fetchAdvancedUserData({ username, location, minRepos });
+      setUsers(data.items);  // GitHub Search API returns items array
     } catch (err) {
-      console.error(err); // Log the error to check what is thrown
-      setError("Looks like we cant find the user");  // Ensure this message is exactly as expected
+      setError("No users found.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="p-6">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <input
           type="text"
-          placeholder="Enter GitHub username"
+          className="border p-2 rounded"
+          placeholder="GitHub Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <input
+          type="text"
+          className="border p-2 rounded"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <input
+          type="number"
+          className="border p-2 rounded"
+          placeholder="Min Repositories"
+          value={minRepos}
+          onChange={(e) => setMinRepos(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        >
+          Search
+        </button>
       </form>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Display the error message */}
-
-      {userData && (
-        <div>
-          <img src={userData.avatar_url} alt={userData.login} width="100" />
-          <h2>{userData.name ? userData.name : userData.login}</h2>
-          <p>Username: {userData.login}</p>
-          <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
-            Visit GitHub Profile
-          </a>
+      {loading && <p className="text-gray-500">Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {users.length > 0 && (
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {users.map((user) => (
+            <div key={user.id} className="border p-4 rounded shadow">
+              <img src={user.avatar_url} alt={user.login} className="w-16 h-16 rounded-full" />
+              <h3 className="text-xl">{user.login}</h3>
+              <p>Location: {user.location || 'N/A'}</p>
+              <p>Repositories: {user.public_repos}</p>
+              <a href={user.html_url} className="text-blue-600" target="_blank" rel="noreferrer">
+                View Profile
+              </a>
+            </div>
+          ))}
         </div>
       )}
     </div>
