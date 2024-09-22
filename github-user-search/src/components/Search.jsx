@@ -10,7 +10,7 @@ const Search = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');  // Clear previous errors before making new request
+    setError('');  // Clear previous errors
     setUserData(null);  // Clear previous data
     try {
       const data = await fetchUserData(username);  // Fetch user data from GitHub
@@ -36,7 +36,7 @@ const Search = () => {
 
       {/* Conditional rendering based on the state */}
       {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}  {/* Display the error message */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Display the error message */}
       {userData && (
         <div>
           <img src={userData.avatar_url} alt={userData.login} width="100" />
