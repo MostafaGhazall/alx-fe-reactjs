@@ -5,18 +5,18 @@ const Search = () => {
   const [username, setUsername] = useState('');    // State to capture input
   const [userData, setUserData] = useState(null);  // State to store user data
   const [loading, setLoading] = useState(false);   // State to handle loading
-  const [error, setError] = useState(null);        // State to handle errors
+  const [error, setError] = useState('');          // State to handle errors
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);  // Clear previous errors
+    setError('');  // Clear previous errors before making new request
+    setUserData(null);  // Clear previous data
     try {
       const data = await fetchUserData(username);  // Fetch user data from GitHub
       setUserData(data);  // Store the fetched data
     } catch (err) {
-      setError('Looks like we can’t find the user.');  // Handle the error
-      setUserData(null);  // Clear previous data
+      setError('Looks like we can’t find the user.');  // Set error message if user is not found
     } finally {
       setLoading(false);  // Stop loading
     }
@@ -36,7 +36,7 @@ const Search = () => {
 
       {/* Conditional rendering based on the state */}
       {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      {error && <p>{error}</p>}  {/* Display the error message */}
       {userData && (
         <div>
           <img src={userData.avatar_url} alt={userData.login} width="100" />
