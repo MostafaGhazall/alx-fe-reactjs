@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { fetchAdvancedUserData } from '../services/githubService';
+import { fetchUserData } from '../services/githubService';  // Import fetchUserData
 
 const Search = () => {
   const [username, setUsername] = useState('');
-  const [location, setLocation] = useState('');
-  const [minRepos, setMinRepos] = useState('');
-  const [users, setUsers] = useState([]);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -13,61 +11,39 @@ const Search = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setUsers([]);
+    setUserData(null);
 
     try {
-      const data = await fetchAdvancedUserData({ username, location, minRepos });
-      setUsers(data.items);  // GitHub Search API returns items array
+      const data = await fetchUserData(username);  // Use fetchUserData from service
+      setUserData(data.items);  // GitHub Search API returns an array of items
     } catch (err) {
-      setError("No users found.");
+      setError("Looks like we can't find the user");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6">
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          className="border p-2 rounded"
-          placeholder="GitHub Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          placeholder="Search GitHub username"
         />
-        <input
-          type="text"
-          className="border p-2 rounded"
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-        <input
-          type="number"
-          className="border p-2 rounded"
-          placeholder="Min Repositories"
-          value={minRepos}
-          onChange={(e) => setMinRepos(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-        >
-          Search
-        </button>
+        <button type="submit">Search</button>
       </form>
 
-      {loading && <p className="text-gray-500">Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {users.length > 0 && (
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {users.map((user) => (
-            <div key={user.id} className="border p-4 rounded shadow">
-              <img src={user.avatar_url} alt={user.login} className="w-16 h-16 rounded-full" />
-              <h3 className="text-xl">{user.login}</h3>
-              <p>Location: {user.location || 'N/A'}</p>
-              <p>Repositories: {user.public_repos}</p>
-              <a href={user.html_url} className="text-blue-600" target="_blank" rel="noreferrer">
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {userData && (
+        <div>
+          {userData.map((user) => (
+            <div key={user.id}>
+              <img src={user.avatar_url} alt={user.login} />
+              <h3>{user.login}</h3>
+              <a href={user.html_url} target="_blank" rel="noopener noreferrer">
                 View Profile
               </a>
             </div>
