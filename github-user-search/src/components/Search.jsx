@@ -5,24 +5,22 @@ const Search = () => {
   const [username, setUsername] = useState('');    // State to capture input
   const [userData, setUserData] = useState(null);  // State to store user data
   const [loading, setLoading] = useState(false);   // State to handle loading
-  const [error, setError] = useState('');          // State to handle errors
+  const [error, setError] = useState(null);        // State to handle errors
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');  // Clear previous errors
-  setUserData(null);  // Clear previous data
-  try {
-    const data = await fetchUserData(username);  // Fetch user data from GitHub
-    setUserData(data);  // Store the fetched data
-  } catch (err) {
-    console.log('Error:', err.message);  // Log the error to the console
-    setError('Looks like we can’t find the user.');  // Set error message if user is not found
-  } finally {
-    setLoading(false);  // Stop loading
-  }
-};
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);  // Clear previous errors
+    try {
+      const data = await fetchUserData(username);  // Fetch user data from GitHub
+      setUserData(data);  // Store the fetched data
+    } catch (err) {
+      setError('Looks like we can’t find the user.');  // Handle the error
+      setUserData(null);  // Clear previous data
+    } finally {
+      setLoading(false);  // Stop loading
+    }
+  };
 
   return (
     <div>
@@ -38,7 +36,7 @@ const handleSubmit = async (e) => {
 
       {/* Conditional rendering based on the state */}
       {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Display the error message */}
+      {error && <p>{error}</p>}
       {userData && (
         <div>
           <img src={userData.avatar_url} alt={userData.login} width="100" />
