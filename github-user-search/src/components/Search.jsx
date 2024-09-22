@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { fetchUserData } from '../services/githubService';  // Import fetchUserData
+import { fetchAdvancedUserData } from '../services/githubService';  // Ensure advanced service is used
 
 const Search = () => {
   const [username, setUsername] = useState('');
+  const [location, setLocation] = useState('');  // Add state for location
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -14,7 +15,7 @@ const Search = () => {
     setUserData(null);
 
     try {
-      const data = await fetchUserData(username);  // Use fetchUserData from service
+      const data = await fetchAdvancedUserData({ username, location });  // Pass location to the fetch function
       setUserData(data.items);  // GitHub Search API returns an array of items
     } catch (err) {
       setError("Looks like we can't find the user");
@@ -32,6 +33,12 @@ const Search = () => {
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Search GitHub username"
         />
+        <input
+          type="text"
+          value={location}  // Add input for location
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Enter location"
+        />
         <button type="submit">Search</button>
       </form>
 
@@ -43,6 +50,7 @@ const Search = () => {
             <div key={user.id}>
               <img src={user.avatar_url} alt={user.login} />
               <h3>{user.login}</h3>
+              <p>{user.location}</p>  {/* Display user location if available */}
               <a href={user.html_url} target="_blank" rel="noopener noreferrer">
                 View Profile
               </a>
