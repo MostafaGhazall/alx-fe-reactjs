@@ -6,8 +6,8 @@ const GITHUB_API_URL = 'https://api.github.com/users';
 export const fetchUserData = async (username) => {
   try {
     const response = await axios.get(`${GITHUB_API_URL}/${username}`);
-    return response.data;  // Return user data from response
+    return response.data;  // Return user data if found
   } catch (error) {
-    throw new Error('User not found');  // Handle error
+    throw new Error('User not found');  // Throw an error if the user doesn't exist
   }
 };
