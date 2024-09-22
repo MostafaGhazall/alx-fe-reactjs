@@ -2,26 +2,27 @@ import React, { useState } from 'react';
 import { fetchUserData } from '../services/githubService';
 
 const Search = () => {
-  const [username, setUsername] = useState('');    // State for search input
-  const [userData, setUserData] = useState(null);  // State to store fetched user data
+  const [username, setUsername] = useState('');    // State to capture input
+  const [userData, setUserData] = useState(null);  // State to store user data
   const [loading, setLoading] = useState(false);   // State to handle loading
-  const [error, setError] = useState('');          // State for error messages
+  const [error, setError] = useState('');          // State to handle errors
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);      // Start loading
-    setError('');          // Clear previous errors
-    setUserData(null);     // Clear previous user data
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');  // Clear previous errors
+  setUserData(null);  // Clear previous data
+  try {
+    const data = await fetchUserData(username);  // Fetch user data from GitHub
+    setUserData(data);  // Store the fetched data
+  } catch (err) {
+    console.log('Error:', err.message);  // Log the error to the console
+    setError('Looks like we can’t find the user.');  // Set error message if user is not found
+  } finally {
+    setLoading(false);  // Stop loading
+  }
+};
 
-    try {
-      const data = await fetchUserData(username);  // Fetch user data from GitHub
-      setUserData(data);   // If successful, store fetched data
-    } catch (err) {
-      setError('Looks like we can’t find the user.');  // If error, show error message
-    } finally {
-      setLoading(false);   // Stop loading
-    }
-  };
 
   return (
     <div>
@@ -30,20 +31,19 @@ const Search = () => {
           type="text"
           placeholder="Enter GitHub username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}  // Update input value
+          onChange={(e) => setUsername(e.target.value)}  // Update the username state
         />
         <button type="submit">Search</button>
       </form>
 
-      {/* Conditional rendering */}
-      {loading && <p>Loading...</p>}  {/* Show loading while fetching */}
-      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Show error if any */}
-
-      {userData && (    {/* Show user data if fetched successfully */}
+      {/* Conditional rendering based on the state */}
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Display the error message */}
+      {userData && (
         <div>
           <img src={userData.avatar_url} alt={userData.login} width="100" />
-          <h2>{userData.name ? userData.name : userData.login}</h2>
-          <p>Username: {userData.login}</p>
+          <h2>{userData.name ? userData.name : userData.login}</h2>  {/* Display user's name if available, else show login */}
+          <p>Username: {userData.login}</p>  {/* Display the login (GitHub username) */}
           <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
             Visit GitHub Profile
           </a>
